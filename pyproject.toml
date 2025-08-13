@@ -1,0 +1,12 @@
+[project]
+name = "greek-finlit-agent"
+version = "0.1.0"
+description = "A financial literacy agent for Greek households."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "accelerate>=1.10.0",
+    "smolagents>=1.21.1",
+    "torch>=2.8.0",
+    "transformers>=4.55.0",
+]
