@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "accelerate>=1.10.0",
-    "smolagents>=1.21.1",
+    "smolagents[litellm,mcp,toolkit]>=1.21.1",
     "torch>=2.8.0",
     "transformers>=4.55.0",
 ]
