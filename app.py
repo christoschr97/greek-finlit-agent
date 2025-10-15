@@ -1,14 +1,15 @@
-"""Simple Streamlit UI for Greek Financial Literacy Agent."""
+"""
+Streamlit UI for the Greek Financial Literacy Agent.
+Run this for the web-based chat experience.
+"""
 
-import os
 import streamlit as st
 from dotenv import load_dotenv
-from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 
-# Import existing logic
+# Import shared modules
 from finlit_agent.literacy_assessment import FinancialLiteracyAssessment
-from finlit_agent.main import BASE_SYSTEM_PROMPT, create_financial_agent
+from finlit_agent.agent import create_financial_agent, BASE_SYSTEM_PROMPT
 
 # Load environment variables
 load_dotenv()

@@ -1,13 +1,12 @@
 """
-Basic Financial Agent with LangChain and Gemini 2.5
-A simple chat interface for financial literacy questions.
+CLI interface for the Greek Financial Literacy Agent.
+Run this for the terminal-based chat experience.
 """
 
-import os
 from dotenv import load_dotenv
-from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from finlit_agent.literacy_assessment import FinancialLiteracyAssessment
+from finlit_agent.agent import create_financial_agent, BASE_SYSTEM_PROMPT
 
 # Load environment variables
 load_dotenv()
@@ -15,32 +14,6 @@ load_dotenv()
 # Constants
 SEPARATOR_LENGTH = 60
 EXIT_COMMANDS = ['quit', 'exit', 'bye', 'έξοδος', 'τέλος']
-BASE_SYSTEM_PROMPT = """Είσαι ένας χρήσιμος βοηθός οικονομικού αλφαβητισμού που ειδικεύεται στα 
-προσωπικά οικονομικά για ελληνικά νοικοκυριά. Παρέχεις σαφείς και πρακτικές συμβουλές 
-για προϋπολογισμό, αποταμίευση, επενδύσεις, διαχείριση χρέους και γενικό οικονομικό 
-σχεδιασμό. Εξηγείς τις έννοιες με απλούς όρους και δίνεις παραδείγματα σχετικά με 
-το ελληνικό πλαίσιο όταν είναι κατάλληλο. Απαντάς πάντα στα ελληνικά.
-
-"""
-
-
-def create_financial_agent():
-    """Initialize the Gemini chat model with financial expertise."""
-    
-    # Check if API key is set
-    api_key = os.getenv("GOOGLE_API_KEY")
-    
-    if not api_key:
-        raise ValueError("Το GOOGLE_API_KEY δεν βρέθηκε. Παρακαλώ ορίστε το στο αρχείο .env")
-    
-    # Initialize Gemini 2.5 (using gemini-2.0-flash-exp for latest features)
-    llm = ChatGoogleGenerativeAI(
-        model="gemini-2.0-flash-exp",
-        temperature=0.7,
-        google_api_key=api_key
-    )
-    
-    return llm
 
 
 def chat_loop():
