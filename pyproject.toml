@@ -5,7 +5,7 @@ description = "A financial literacy agent for Greek households."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "langchain>=0.3.27",
+    "langchain>=1.0.0",
     "langchain-google-genai>=2.0.10",
     "python-dotenv>=1.0.0",
     "streamlit>=1.39.0",

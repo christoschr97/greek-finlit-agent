@@ -6,8 +6,6 @@ Run this for the web-based chat experience.
 import streamlit as st
 from dotenv import load_dotenv
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
-
-# Import shared modules
 from finlit_agent.literacy_assessment import FinancialLiteracyAssessment
 from finlit_agent.agent import create_financial_agent, BASE_SYSTEM_PROMPT
 
