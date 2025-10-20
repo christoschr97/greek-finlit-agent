@@ -83,6 +83,66 @@ When you start the app, it runs the **Lusardi-Mitchell Big 3** - the most widely
 
 The agent uses your score to adapt its responses to your level!
 
+## Testing
+
+### Testing Framework
+
+We use a simple but effective testing setup:
+
+- **pytest** - Python testing framework for writing and running tests
+- **pytest-cov** - Coverage plugin to measure test coverage
+- **unittest.mock** - Python's built-in mocking library for isolating components
+
+All tests mock Streamlit components, so they run fast without requiring a browser or UI rendering.
+
+### Running Tests
+
+#### Install dev dependencies
+```bash
+uv sync --extra dev
+```
+
+#### Run all tests
+```bash
+uv run pytest tests/ -v
+```
+
+#### Run with coverage report
+```bash
+uv run pytest tests/ --cov=src/finlit_agent/ui --cov-report=term-missing
+```
+
+#### Run specific test file
+```bash
+uv run pytest tests/ui/test_config.py
+```
+
+#### Run specific test
+```bash
+uv run pytest tests/ui/test_config.py::test_page_config_exists
+```
+
+### Test Coverage
+
+Current coverage: **84%** ✅
+
+- `config.py`: 100%
+- `session_state.py`: 100%
+- `assessment_ui.py`: 95%
+- `chat_ui.py`: 55%
+
+### What We Test
+
+Our tests validate:
+- ✅ Configuration constants are properly defined
+- ✅ Session state initialization works correctly
+- ✅ Assessment UI renders questions and results
+- ✅ Chat UI handles messages and user input
+- ✅ Helper functions work as expected
+
+Tests are kept **simple and focused** - each test validates one specific behavior.
+
+
 ## Next Steps
 
 This is a basic starting point. You can progressively add:
