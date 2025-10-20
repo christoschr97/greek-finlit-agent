@@ -23,8 +23,7 @@ st.set_page_config(
 if "assessment_done" not in st.session_state:
     st.session_state.assessment_done = False
     st.session_state.current_question = 0
-    st.session_state.score = 0
-    st.session_state.answers = {}
+    st.session_state.assessment = FinancialLiteracyAssessment()
     st.session_state.messages = []
     st.session_state.agent = None
 
@@ -35,7 +34,7 @@ st.title("💰 Ελληνικός Βοηθός Οικονομικού Εγγρα
 if not st.session_state.assessment_done:
     st.markdown("### 📊 Αξιολόγηση Οικονομικού Εγγραμματισμού (Big 3)")
     
-    assessment = FinancialLiteracyAssessment()
+    assessment = st.session_state.assessment
     questions = assessment.QUESTIONS
     
     if st.session_state.current_question < len(questions):
@@ -57,33 +56,19 @@ if not st.session_state.assessment_done:
         )
         
         if st.button("Επόμενο", type="primary"):
-            # Score answer
-            is_correct = (answer == q['correct'])
-            if is_correct:
-                st.session_state.score += 1
-            
-            # Store answer
-            st.session_state.answers[q['id']] = {
-                'user_answer': answer,
-                'correct_answer': q['correct'],
-                'is_correct': is_correct,
-                'explanation': q['explanation']
-            }
+            # Record answer using the proper method
+            assessment.record_answer(q['id'], answer)
             
             st.session_state.current_question += 1
             st.rerun()
     
     else:
-        # Show results
-        assessment.score = st.session_state.score
-        assessment.answers = st.session_state.answers
-        level = assessment._calculate_level(st.session_state.score)
-        
+        # Show results using public methods
         st.success("✅ Αξιολόγηση ολοκληρώθηκε!")
-        st.metric("Επίπεδο", assessment.LEVEL_NAMES[level], f"{st.session_state.score}/3")
+        st.metric("Επίπεδο", assessment.get_level_name(), f"{assessment.score}/3")
         
         with st.expander("📋 Δες τα αποτελέσματα"):
-            for q_id, ans in st.session_state.answers.items():
+            for q_id, ans in assessment.answers.items():
                 icon = "✅" if ans['is_correct'] else "❌"
                 st.write(f"{icon} Ερώτηση {q_id}: {ans['explanation']}")
         

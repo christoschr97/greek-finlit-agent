@@ -94,6 +94,57 @@ class FinancialLiteracyAssessment:
         self.score = 0
         self.answers = {}
     
+    def record_answer(self, question_id: int, user_answer: str) -> bool:
+        """
+        Record a user's answer to a question.
+        
+        Args:
+            question_id: The ID of the question (1-3)
+            user_answer: The user's answer (a, b, c, or d)
+            
+        Returns:
+            bool: True if answer was correct, False otherwise
+        """
+        # Find the question
+        question = next((q for q in self.QUESTIONS if q['id'] == question_id), None)
+        if not question:
+            raise ValueError(f"Invalid question_id: {question_id}")
+        
+        # Score the answer
+        is_correct = (user_answer == question['correct'])
+        if is_correct:
+            self.score += 1
+        
+        # Store the answer
+        self.answers[question_id] = {
+            'question': question['question'],
+            'user_answer': user_answer,
+            'correct_answer': question['correct'],
+            'is_correct': is_correct,
+            'explanation': question['explanation']
+        }
+        
+        return is_correct
+    
+    def get_level(self) -> LiteracyLevel:
+        """
+        Get the user's literacy level based on current score.
+        
+        Returns:
+            LiteracyLevel: The calculated literacy level
+        """
+        return self._calculate_level(self.score)
+    
+    def get_level_name(self) -> str:
+        """
+        Get the user's literacy level name in Greek.
+        
+        Returns:
+            str: The Greek name of the literacy level
+        """
+        level = self.get_level()
+        return self.LEVEL_NAMES[level]
+    
     def assess_user(self) -> Tuple[int, LiteracyLevel, dict]:
         """
         Run the Big 3 assessment.
