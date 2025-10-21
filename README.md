@@ -129,21 +129,29 @@ uv run pytest tests/ui/test_config.py::test_page_config_exists
 
 ### Test Coverage
 
-Current coverage: **84%** ✅
+Current coverage: **75%** ✅
 
+**Core Modules:**
+- `agent.py`: 100%
+- `literacy_assessment.py`: 60%
+
+**UI Modules:**
 - `config.py`: 100%
 - `session_state.py`: 100%
 - `assessment_ui.py`: 95%
 - `chat_ui.py`: 55%
 
+**Total: 51 tests**
+
 ### What We Test
 
 Our tests validate:
-- ✅ Configuration constants are properly defined
-- ✅ Session state initialization works correctly
-- ✅ Assessment UI renders questions and results
-- ✅ Chat UI handles messages and user input
-- ✅ Helper functions work as expected
+- ✅ **Agent creation** - API key handling, model configuration
+- ✅ **Assessment logic** - Big 3 questions, scoring, level calculation
+- ✅ **Configuration** - Constants are properly defined
+- ✅ **Session state** - Initialization works correctly
+- ✅ **Assessment UI** - Renders questions and results
+- ✅ **Chat UI** - Handles messages and user input
 
 Tests are kept **simple and focused** - each test validates one specific behavior.
 

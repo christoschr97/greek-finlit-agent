@@ -1,20 +1,22 @@
 # Tests
 
-Simple unit tests for the Greek Financial Literacy Agent UI components.
+Simple unit tests for the Greek Financial Literacy Agent.
 
 ## Structure
 
 ```
 tests/
 ├── __init__.py
-├── conftest.py              # Pytest fixtures
-├── README.md               # This file
+├── conftest.py                  # Pytest fixtures
+├── README.md                    # This file
+├── test_agent.py                # Agent creation and configuration tests
+├── test_literacy_assessment.py  # Assessment logic tests
 └── ui/
     ├── __init__.py
-    ├── test_config.py       # Config tests
-    ├── test_session_state.py # Session state tests
-    ├── test_assessment_ui.py # Assessment UI tests
-    └── test_chat_ui.py      # Chat UI tests
+    ├── test_config.py           # Config tests
+    ├── test_session_state.py    # Session state tests
+    ├── test_assessment_ui.py    # Assessment UI tests
+    └── test_chat_ui.py          # Chat UI tests
 ```
 
 ## Running Tests
@@ -46,10 +48,14 @@ pytest tests/ --cov=src/finlit_agent/ui --cov-report=term-missing
 
 ## Test Coverage
 
+- **test_agent.py**: Agent initialization, API key handling, model configuration
+- **test_literacy_assessment.py**: Big 3 questions, scoring logic, level calculation
 - **test_config.py**: Configuration constants validation
 - **test_session_state.py**: Session state initialization and helpers
 - **test_assessment_ui.py**: Assessment rendering and interactions
 - **test_chat_ui.py**: Chat interface and message handling
+
+**Total: 51 tests | Overall coverage: 75%**
 
 ## Dependencies
 
