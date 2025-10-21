@@ -1,17 +1,19 @@
-FROM python:3.13.9-alpine
+# Minimal Dockerfile using uv (mirrors local development)
+FROM python:3.12-slim
 
 WORKDIR /app
-# COPY . /app # we move this down for optimization (when we change the CMD or anything inside the file to not build the requirements.txt again and agian)
 
-COPY requirements.txt .
-RUN pip install -r requirements.txt
+# Install uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
-# Manual installation of prerelease of langchain (until it stabilizes v1)
-RUN pip install --pre -U langchain
-RUN pip install --pre -U langchain-openai
-
+# Copy everything
 COPY . .
 
-EXPOSE 8000
+# Install dependencies with uv
+RUN uv sync
 
-CMD ["streamlit", "run", "app.py"]
+# Expose Streamlit port
+EXPOSE 8501
+
+# Run with uv
+CMD ["uv", "run", "streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]

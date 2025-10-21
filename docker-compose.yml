@@ -4,8 +4,6 @@ services:
   app:
     build: .
     ports:
-      - 8000:8000
-    volumes:
-      - .:/app
-    working_dir: /app
-    command: streamlit run src/finlit_agent/app.py
+      - "8501:8501"
+    env_file:
+      - .env

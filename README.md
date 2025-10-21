@@ -29,14 +29,19 @@ python3 test_big3.py
 
 ### 4. Run the Agent
 
+**Local:**
 ```bash
-uv run finlit-agent
+streamlit run app.py
 ```
 
-Or:
+**Docker:**
 ```bash
-python3 -m finlit_agent.main
+docker-compose up
 ```
+
+Access at: http://localhost:8501
+
+See [DOCKER.md](DOCKER.md) for Docker details.
 
 ## Usage
 
