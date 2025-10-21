@@ -5,7 +5,26 @@ description = "A financial literacy agent for Greek households."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "langchain>=0.3.27",
+    "langchain>=1.0.0",
     "langchain-google-genai>=2.0.10",
     "python-dotenv>=1.0.0",
+    "streamlit>=1.39.0",
+    "watchdog>=6.0.0",
 ]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.1.0",
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
