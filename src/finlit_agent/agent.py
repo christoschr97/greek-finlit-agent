@@ -1,8 +1,3 @@
-"""
-Shared agent configuration and initialization.
-Used by both CLI (main.py) and Streamlit (app.py) interfaces.
-"""
-
 import os
 from langchain_google_genai import ChatGoogleGenerativeAI
 

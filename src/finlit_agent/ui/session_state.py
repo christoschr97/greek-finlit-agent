@@ -10,7 +10,9 @@ from .config import (
     SESSION_CURRENT_QUESTION,
     SESSION_ASSESSMENT,
     SESSION_MESSAGES,
-    SESSION_AGENT
+    SESSION_AGENT,
+    SESSION_PATH_SELECTED,
+    SESSION_SELECTED_PATH
 )
 
 
@@ -22,6 +24,8 @@ def initialize_session_state() -> None:
         st.session_state[SESSION_ASSESSMENT] = FinancialLiteracyAssessment()
         st.session_state[SESSION_MESSAGES] = []
         st.session_state[SESSION_AGENT] = None
+        st.session_state[SESSION_PATH_SELECTED] = False
+        st.session_state[SESSION_SELECTED_PATH] = None
 
 
 def get_state(key: str) -> Any:

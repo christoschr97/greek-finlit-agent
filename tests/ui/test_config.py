@@ -32,6 +32,8 @@ def test_session_keys_are_strings():
     assert isinstance(config.SESSION_ASSESSMENT, str)
     assert isinstance(config.SESSION_MESSAGES, str)
     assert isinstance(config.SESSION_AGENT, str)
+    assert isinstance(config.SESSION_PATH_SELECTED, str)
+    assert isinstance(config.SESSION_SELECTED_PATH, str)
 
 
 def test_ui_strings_exist():
@@ -40,3 +42,26 @@ def test_ui_strings_exist():
     assert hasattr(config, 'CHAT_INPUT_PLACEHOLDER')
     assert hasattr(config, 'NEXT_BUTTON')
     assert isinstance(config.NEXT_BUTTON, str)
+
+
+def test_path_selection_strings_exist():
+    """Test that path selection strings are defined."""
+    assert hasattr(config, 'PATH_SELECTION_TITLE')
+    assert hasattr(config, 'GENERAL_CHAT_PATH')
+    assert hasattr(config, 'RESPONSIBLE_BORROWING_PATH')
+    assert isinstance(config.GENERAL_CHAT_PATH, str)
+    assert isinstance(config.RESPONSIBLE_BORROWING_PATH, str)
+
+
+def test_responsible_borrowing_strings_exist():
+    """Test that responsible borrowing strings are defined."""
+    assert hasattr(config, 'RESPONSIBLE_BORROWING_TITLE')
+    assert hasattr(config, 'RESPONSIBLE_BORROWING_DESCRIPTION')
+    assert isinstance(config.RESPONSIBLE_BORROWING_TITLE, str)
+    assert isinstance(config.RESPONSIBLE_BORROWING_DESCRIPTION, str)
+
+
+def test_sidebar_strings_exist():
+    """Test that sidebar strings are defined."""
+    assert hasattr(config, 'SIDEBAR_NAV_TITLE')
+    assert isinstance(config.SIDEBAR_NAV_TITLE, str)

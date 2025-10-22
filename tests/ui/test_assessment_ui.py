@@ -94,7 +94,18 @@ def test_render_results_displays_score(mock_st):
     mock_st.success = MagicMock()
     mock_st.metric = MagicMock()
     mock_st.expander = MagicMock()
+    mock_st.markdown = MagicMock()
+    mock_st.write = MagicMock()
     mock_st.button = MagicMock(return_value=False)
+    
+    # Mock columns
+    col1 = MagicMock()
+    col2 = MagicMock()
+    col1.__enter__ = MagicMock(return_value=col1)
+    col1.__exit__ = MagicMock(return_value=False)
+    col2.__enter__ = MagicMock(return_value=col2)
+    col2.__exit__ = MagicMock(return_value=False)
+    mock_st.columns = MagicMock(return_value=[col1, col2])
     
     _render_results(mock_assessment)
     
@@ -104,28 +115,107 @@ def test_render_results_displays_score(mock_st):
 
 
 @patch('finlit_agent.ui.assessment_ui.st')
-@patch('finlit_agent.ui.assessment_ui.create_financial_agent')
-def test_render_results_start_chat(mock_create_agent, mock_st):
-    """Test that clicking start chat initializes agent."""
+def test_render_results_shows_path_selection_buttons(mock_st):
+    """Test that results screen shows two path selection buttons."""
     mock_assessment = MagicMock()
     mock_assessment.get_level_name = MagicMock(return_value="Intermediate")
-    mock_assessment.get_context_summary = MagicMock(return_value="Context")
     mock_assessment.score = 2
     mock_assessment.QUESTIONS = [1, 2, 3]
     mock_assessment.answers = {}
-    
-    mock_agent = MagicMock()
-    mock_create_agent.return_value = mock_agent
     
     mock_st.session_state = {}
     mock_st.success = MagicMock()
     mock_st.metric = MagicMock()
     mock_st.expander = MagicMock()
-    mock_st.button = MagicMock(return_value=True)  # Button clicked
-    mock_st.rerun = MagicMock()
+    mock_st.markdown = MagicMock()
+    mock_st.write = MagicMock()
+    mock_st.button = MagicMock(return_value=False)
+    
+    col1 = MagicMock()
+    col2 = MagicMock()
+    col1.__enter__ = MagicMock(return_value=col1)
+    col1.__exit__ = MagicMock(return_value=False)
+    col2.__enter__ = MagicMock(return_value=col2)
+    col2.__exit__ = MagicMock(return_value=False)
+    mock_st.columns = MagicMock(return_value=[col1, col2])
     
     _render_results(mock_assessment)
     
-    # Should initialize agent
-    assert mock_st.session_state['agent'] == mock_agent
+    # Should create two columns for buttons
+    mock_st.columns.assert_called_once_with(2)
+    # Should call button twice (once in each column context)
+    assert mock_st.button.call_count == 2
+
+
+@patch('finlit_agent.ui.assessment_ui.st')
+def test_render_results_general_chat_button_click(mock_st):
+    """Test clicking general chat button sets session state."""
+    mock_assessment = MagicMock()
+    mock_assessment.get_level_name = MagicMock(return_value="Intermediate")
+    mock_assessment.score = 2
+    mock_assessment.QUESTIONS = [1, 2, 3]
+    mock_assessment.answers = {}
+    
+    mock_st.session_state = {}
+    mock_st.success = MagicMock()
+    mock_st.metric = MagicMock()
+    mock_st.expander = MagicMock()
+    mock_st.markdown = MagicMock()
+    mock_st.write = MagicMock()
+    mock_st.rerun = MagicMock()
+    
+    col1 = MagicMock()
+    col2 = MagicMock()
+    col1.__enter__ = MagicMock(return_value=col1)
+    col1.__exit__ = MagicMock(return_value=False)
+    col2.__enter__ = MagicMock(return_value=col2)
+    col2.__exit__ = MagicMock(return_value=False)
+    mock_st.columns = MagicMock(return_value=[col1, col2])
+    
+    # First button clicked, second not clicked
+    mock_st.button = MagicMock(side_effect=[True, False])
+    
+    _render_results(mock_assessment)
+    
+    # Should set session state for general chat
     assert mock_st.session_state['assessment_done'] is True
+    assert mock_st.session_state['selected_path'] == 'general_chat'
+    assert mock_st.session_state['path_selected'] is True
+    mock_st.rerun.assert_called_once()
+
+
+@patch('finlit_agent.ui.assessment_ui.st')
+def test_render_results_responsible_borrowing_button_click(mock_st):
+    """Test clicking responsible borrowing button sets session state."""
+    mock_assessment = MagicMock()
+    mock_assessment.get_level_name = MagicMock(return_value="Beginner")
+    mock_assessment.score = 1
+    mock_assessment.QUESTIONS = [1, 2, 3]
+    mock_assessment.answers = {}
+    
+    mock_st.session_state = {}
+    mock_st.success = MagicMock()
+    mock_st.metric = MagicMock()
+    mock_st.expander = MagicMock()
+    mock_st.markdown = MagicMock()
+    mock_st.write = MagicMock()
+    mock_st.rerun = MagicMock()
+    
+    col1 = MagicMock()
+    col2 = MagicMock()
+    col1.__enter__ = MagicMock(return_value=col1)
+    col1.__exit__ = MagicMock(return_value=False)
+    col2.__enter__ = MagicMock(return_value=col2)
+    col2.__exit__ = MagicMock(return_value=False)
+    mock_st.columns = MagicMock(return_value=[col1, col2])
+    
+    # First button not clicked, second button clicked
+    mock_st.button = MagicMock(side_effect=[False, True])
+    
+    _render_results(mock_assessment)
+    
+    # Should set session state for responsible borrowing
+    assert mock_st.session_state['assessment_done'] is True
+    assert mock_st.session_state['selected_path'] == 'responsible_borrowing'
+    assert mock_st.session_state['path_selected'] is True
+    mock_st.rerun.assert_called_once()
