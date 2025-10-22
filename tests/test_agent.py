@@ -62,7 +62,7 @@ def test_create_agent_uses_correct_model(mock_chat_class):
     # Check that the model parameter was passed
     call_kwargs = mock_chat_class.call_args[1]
     assert 'model' in call_kwargs
-    assert 'gemini-2.0' in call_kwargs['model']
+    assert 'gemini-2.5-flash' in call_kwargs['model']
 
 
 @patch.dict('os.environ', {'GOOGLE_API_KEY': 'test-api-key-123'})

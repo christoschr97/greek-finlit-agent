@@ -7,3 +7,29 @@ services:
       - "8501:8501"
     env_file:
       - .env
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: finlit_db
+      DB_USER: finlit_user
+      DB_PASSWORD: finlit_password
+    volumes:
+      - .:/app
+    depends_on:
+      - postgres
+    # Override the CMD to use the mounted code instead of the copied code
+    command: ["uv", "run", "streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: finlit_db
+      POSTGRES_USER: finlit_user
+      POSTGRES_PASSWORD: finlit_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

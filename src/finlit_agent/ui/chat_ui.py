@@ -23,7 +23,7 @@ def render_chat() -> None:
 def _display_chat_history() -> None:
     """Display all messages in the chat history (skip system message)."""
     messages: List[BaseMessage] = st.session_state[SESSION_MESSAGES]
-    
+
     for msg in messages:
         if isinstance(msg, HumanMessage):
             with st.chat_message("user"):
