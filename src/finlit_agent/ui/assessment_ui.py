@@ -15,11 +15,16 @@ from .config import (
     NEXT_BUTTON,
     QUESTION_PROMPT,
     LEVEL_METRIC_LABEL,
+    GENERAL_CHAT_PATH,
+    RESPONSIBLE_BORROWING_PATH,
+    PATH_SELECTION_TITLE,
     SESSION_ASSESSMENT_DONE,
     SESSION_CURRENT_QUESTION,
     SESSION_ASSESSMENT,
     SESSION_MESSAGES,
-    SESSION_AGENT
+    SESSION_AGENT,
+    SESSION_PATH_SELECTED,
+    SESSION_SELECTED_PATH
 )
 
 
@@ -69,7 +74,7 @@ def _render_question(
 
 
 def _render_results(assessment: FinancialLiteracyAssessment) -> None:
-    """Render the assessment results and start button."""
+    """Render the assessment results and path selection buttons."""
     st.success(ASSESSMENT_COMPLETE)
     st.metric(
         LEVEL_METRIC_LABEL, 
@@ -81,9 +86,27 @@ def _render_results(assessment: FinancialLiteracyAssessment) -> None:
         for q_id, ans in assessment.answers.items():
             icon = "✅" if ans['is_correct'] else "❌"
             st.write(f"{icon} Ερώτηση {q_id}: {ans['explanation']}")
-    
-    if st.button(START_CHAT_BUTTON, type="primary"):
-        _initialize_chat(assessment)
+
+    # Show path selection directly after results
+    st.markdown("---")
+    st.markdown(PATH_SELECTION_TITLE)
+    st.write("Επιλέξτε μία διαδρομή:")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        if st.button(GENERAL_CHAT_PATH, type="primary", use_container_width=True):
+            st.session_state[SESSION_ASSESSMENT_DONE] = True
+            st.session_state[SESSION_SELECTED_PATH] = "general_chat"
+            st.session_state[SESSION_PATH_SELECTED] = True
+            st.rerun()
+
+    with col2:
+        if st.button(RESPONSIBLE_BORROWING_PATH, use_container_width=True):
+            st.session_state[SESSION_ASSESSMENT_DONE] = True
+            st.session_state[SESSION_SELECTED_PATH] = "responsible_borrowing"
+            st.session_state[SESSION_PATH_SELECTED] = True
+            st.rerun()
 
 
 def _initialize_chat(assessment: FinancialLiteracyAssessment) -> None:

@@ -1,8 +1,3 @@
-"""
-Shared agent configuration and initialization.
-Used by both CLI (main.py) and Streamlit (app.py) interfaces.
-"""
-
 import os
 from langchain_google_genai import ChatGoogleGenerativeAI
 
@@ -33,7 +28,7 @@ def create_financial_agent():
     
     # Initialize Gemini 2.5 (using gemini-2.0-flash-exp for latest features)
     llm = ChatGoogleGenerativeAI(
-        model="gemini-2.0-flash-exp",
+        model="gemini-2.5-flash",
         temperature=0.7,
         google_api_key=api_key
     )

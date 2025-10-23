@@ -19,6 +19,8 @@ def test_initialize_session_state(mock_st):
     assert 'assessment' in mock_st.session_state
     assert 'messages' in mock_st.session_state
     assert 'agent' in mock_st.session_state
+    assert 'path_selected' in mock_st.session_state
+    assert 'selected_path' in mock_st.session_state
 
 
 @patch('finlit_agent.ui.session_state.st')
@@ -32,6 +34,8 @@ def test_initialize_session_state_default_values(mock_st):
     assert mock_st.session_state['current_question'] == 0
     assert mock_st.session_state['messages'] == []
     assert mock_st.session_state['agent'] is None
+    assert mock_st.session_state['path_selected'] is False
+    assert mock_st.session_state['selected_path'] is None
 
 
 @patch('finlit_agent.ui.session_state.st')
