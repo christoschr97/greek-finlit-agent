@@ -264,12 +264,31 @@ def _show_financial_summary():
     st.markdown("---")
     
     # Affordability analysis using service
-    _analyze_affordability(data, metrics)
+    analysis, status = _analyze_affordability(data, metrics)
+    
+    # NEW: Show visualization button if user can afford the loan
+    if status in ["safe", "warning"]:
+        st.markdown("---")
+        st.markdown("### 📊 Θέλεις να δεις τις καλύτερες επιλογές δανείου;")
+        st.write("Μπορούμε να σου δείξουμε διαφορετικές επιλογές δανείου και πώς θα εξελιχθεί το δάνειο στα επόμενα χρόνια.")
+        
+        if st.button("💡 Δες Προτάσεις & Οπτικοποιήσεις", type="primary", use_container_width=True):
+            st.session_state["rb_show_visualizations"] = True
+            st.rerun()
+    
+    # Show visualizations if user clicked the button
+    if st.session_state.get("rb_show_visualizations", False):
+        st.markdown("---")
+        _show_loan_visualizations()
     
     # Button to change financial data
-    if st.button("✏️ Αλλαγή Στοιχείων"):
-        del st.session_state["rb_financial_data"]
-        st.rerun()
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("✏️ Αλλαγή Στοιχείων", use_container_width=True):
+            del st.session_state["rb_financial_data"]
+            if "rb_show_visualizations" in st.session_state:
+                del st.session_state["rb_show_visualizations"]
+            st.rerun()
 
 
 def _analyze_affordability(data: dict, metrics: dict):
@@ -319,6 +338,25 @@ def _analyze_affordability(data: dict, metrics: dict):
                 st.info(recommendation)
             else:
                 st.success(recommendation)
+    
+    # Return analysis for use in next step
+    return analysis, status
+
+
+def _show_loan_visualizations():
+    """Δείχνουμε τις οπτικοποιήσεις των δανειακών επιλογών."""
+    from .loan_visualization_ui import render_loan_visualization
+    
+    data = st.session_state["rb_financial_data"]
+    loan_type = st.session_state["rb_loan_type"]
+    loan_amount = data["loan_amount"]
+    
+    # Render the visualization
+    render_loan_visualization(
+        financial_data=data,
+        loan_type=loan_type,
+        loan_amount=loan_amount
+    )
 
 
 def _reset():
@@ -328,7 +366,8 @@ def _reset():
         "rb_confidence", 
         "rb_reasoning", 
         "rb_user_input",
-        "rb_financial_data"
+        "rb_financial_data",
+        "rb_show_visualizations"
     ]
     for key in keys_to_delete:
         if key in st.session_state:
