@@ -96,7 +96,7 @@ def _explain_loan_basics():
     st.markdown("---")
     st.markdown("### 📚 Ας μάθουμε τα βασικά")
     
-    # Εξήγηση με απλά λόγια
+    # Show simple explanation of the loan type
     _show_simple_explanation(loan_type)
     
     st.markdown("---")
