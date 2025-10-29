@@ -113,3 +113,63 @@ def test_get_common_terms(service):
     assert "Επιτόκιο" in terms["col1"]["interest_rate"]
     assert "Διάρκεια" in terms["col2"]["term_and_apr"]
 
+
+def test_get_default_term_mortgage(service):
+    """Test getting default term for mortgage."""
+    assert service.get_default_term("mortgage") == 20
+
+
+def test_get_default_term_personal(service):
+    """Test getting default term for personal loan."""
+    assert service.get_default_term("personal") == 5
+
+
+def test_get_default_term_auto(service):
+    """Test getting default term for auto loan."""
+    assert service.get_default_term("auto") == 5
+
+
+def test_get_default_term_student(service):
+    """Test getting default term for student loan."""
+    assert service.get_default_term("student") == 10
+
+
+def test_get_default_term_business(service):
+    """Test getting default term for business loan."""
+    assert service.get_default_term("business") == 5
+
+
+def test_get_default_term_unknown(service):
+    """Test getting default term for unknown type."""
+    assert service.get_default_term("invalid_type") == 5  # Should return unknown default
+
+
+def test_get_default_interest_rate_mortgage(service):
+    """Test getting default interest rate for mortgage."""
+    assert service.get_default_interest_rate("mortgage") == 0.03
+
+
+def test_get_default_interest_rate_personal(service):
+    """Test getting default interest rate for personal loan."""
+    assert service.get_default_interest_rate("personal") == 0.07
+
+
+def test_get_default_interest_rate_auto(service):
+    """Test getting default interest rate for auto loan."""
+    assert service.get_default_interest_rate("auto") == 0.05
+
+
+def test_get_default_interest_rate_student(service):
+    """Test getting default interest rate for student loan."""
+    assert service.get_default_interest_rate("student") == 0.04
+
+
+def test_get_default_interest_rate_business(service):
+    """Test getting default interest rate for business loan."""
+    assert service.get_default_interest_rate("business") == 0.06
+
+
+def test_get_default_interest_rate_unknown(service):
+    """Test getting default interest rate for unknown type."""
+    assert service.get_default_interest_rate("invalid_type") == 0.05  # Should return unknown default
+

@@ -21,6 +21,26 @@ class LoanInformationService:
         "unknown": "Άγνωστο"
     }
     
+    # Default loan terms by loan type (in years)
+    DEFAULT_TERMS = {
+        "mortgage": 20,
+        "personal": 5,
+        "auto": 5,
+        "student": 10,
+        "business": 5,
+        "unknown": 5
+    }
+    
+    # Default interest rates by loan type (annual, as decimal)
+    DEFAULT_INTEREST_RATES = {
+        "mortgage": 0.03,  # 3%
+        "personal": 0.07,  # 7%
+        "auto": 0.05,      # 5%
+        "student": 0.04,   # 4%
+        "business": 0.06,  # 6%
+        "unknown": 0.05    # 5%
+    }
+    
     def get_loan_name(self, loan_type: str) -> str:
         """
         Get the Greek name for a loan type.
@@ -32,6 +52,30 @@ class LoanInformationService:
             Greek name of the loan type
         """
         return self.LOAN_TYPES_GR.get(loan_type, loan_type)
+    
+    def get_default_term(self, loan_type: str) -> int:
+        """
+        Get the default loan term (in years) for a loan type.
+        
+        Args:
+            loan_type: Loan type identifier
+            
+        Returns:
+            Default loan term in years
+        """
+        return self.DEFAULT_TERMS.get(loan_type, self.DEFAULT_TERMS["unknown"])
+    
+    def get_default_interest_rate(self, loan_type: str) -> float:
+        """
+        Get the default interest rate for a loan type.
+        
+        Args:
+            loan_type: Loan type identifier
+            
+        Returns:
+            Annual interest rate as decimal (e.g., 0.05 for 5%)
+        """
+        return self.DEFAULT_INTEREST_RATES.get(loan_type, self.DEFAULT_INTEREST_RATES["unknown"])
     
     def get_loan_explanation(self, loan_type: str) -> Optional[Dict[str, str]]:
         """

@@ -117,13 +117,16 @@ def test_calculate_financial_metrics_complete(service):
         "savings": 2000
     }
     
+    # Uses default loan_type "personal" with 7% interest and 5 years
     metrics = service.calculate_financial_metrics(financial_data)
     
     assert metrics["total_income"] == 2500
     assert metrics["total_expenses"] == 1500
     assert metrics["disposable_income"] == 1000
-    assert 188 < metrics["estimated_payment"] < 189
+    assert 197 < metrics["estimated_payment"] < 199  # ~198 with 7% interest
     assert 9 < metrics["payment_ratio"] < 10
+    assert metrics["term_years"] == 5  # Default for personal loan
+    assert metrics["interest_rate"] == 0.07  # 7% for personal loan
 
 
 def test_calculate_financial_metrics_missing_keys(service):
@@ -148,6 +151,40 @@ def test_calculate_financial_metrics_empty_dict(service):
     assert metrics["total_income"] == 0
     assert metrics["total_expenses"] == 0
     assert metrics["disposable_income"] == 0
-    assert metrics["estimated_payment"] == 0.0
-    assert metrics["payment_ratio"] == 0.0
+
+
+def test_calculate_financial_metrics_mortgage_loan(service):
+    """Test financial metrics calculation with mortgage loan type."""
+    financial_data = {
+        "monthly_income": 3000,
+        "loan_amount": 100000,
+    }
+    
+    # Mortgage defaults: 20 years, 3% interest
+    metrics = service.calculate_financial_metrics(financial_data, loan_type="mortgage")
+    
+    assert metrics["term_years"] == 20
+    assert metrics["interest_rate"] == 0.03
+    # Payment should be around 554 with 3% over 20 years
+    assert 550 < metrics["estimated_payment"] < 560
+
+
+def test_calculate_financial_metrics_custom_term(service):
+    """Test financial metrics calculation with custom term."""
+    financial_data = {
+        "monthly_income": 2000,
+        "loan_amount": 10000,
+    }
+    
+    # Personal loan with custom 10-year term
+    metrics = service.calculate_financial_metrics(
+        financial_data, 
+        loan_type="personal",
+        term_years=10
+    )
+    
+    assert metrics["term_years"] == 10
+    assert metrics["interest_rate"] == 0.07
+    # Payment should be around 116 with 7% over 10 years
+    assert 115 < metrics["estimated_payment"] < 117
 

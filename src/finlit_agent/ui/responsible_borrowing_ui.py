@@ -158,6 +158,10 @@ def _show_financial_form():
     st.markdown("### 💰 Η Οικονομική σου Κατάσταση")
     st.write("Για να σε βοηθήσουμε καλύτερα, πες μας λίγα για την οικονομική σου κατάσταση:")
     
+    # Get default term for current loan type
+    loan_type = st.session_state.get("rb_loan_type", "personal")
+    default_term = loan_info_service.get_default_term(loan_type)
+    
     with st.form("financial_form"):
         col1, col2 = st.columns(2)
         
@@ -219,6 +223,16 @@ def _show_financial_form():
                 help="Πόσα χρήματα θέλεις να δανειστείς"
             )
         
+        st.markdown("#### ⏱️ Διάρκεια Δανείου")
+        term_years = st.slider(
+            "Διάρκεια δανείου (χρόνια)",
+            min_value=1,
+            max_value=30,
+            value=default_term,
+            step=1,
+            help="Πόσα χρόνια θα πληρώνεις το δάνειο"
+        )
+        
         submitted = st.form_submit_button("📊 Ανάλυση της Κατάστασής μου", type="primary")
         
         if submitted:
@@ -229,7 +243,8 @@ def _show_financial_form():
                 "monthly_expenses": monthly_expenses,
                 "existing_loans": existing_loans,
                 "savings": savings,
-                "loan_amount": loan_amount
+                "loan_amount": loan_amount,
+                "term_years": term_years
             }
             st.rerun()
 
@@ -237,11 +252,17 @@ def _show_financial_form():
 def _show_financial_summary():
     """Δείχνουμε σύνοψη και ανάλυση της οικονομικής κατάστασης."""
     data = st.session_state["rb_financial_data"]
+    loan_type = st.session_state.get("rb_loan_type", "personal")
+    term_years = data.get("term_years")
     
     st.markdown("### 📊 Ανάλυση Οικονομικής Κατάστασης")
     
     # Calculate metrics using service
-    metrics = calculator_service.calculate_financial_metrics(data)
+    metrics = calculator_service.calculate_financial_metrics(
+        data, 
+        loan_type=loan_type,
+        term_years=term_years
+    )
     
     # Δείχνουμε τα νούμερα
     col1, col2, col3 = st.columns(3)
@@ -307,7 +328,7 @@ def _analyze_affordability(data: dict, metrics: dict):
     with col1:
         st.markdown("#### 📌 Εκτιμώμενη Μηνιαία Δόση")
         st.info(f"**~{estimated_payment:,.0f}€/μήνα**")
-        st.caption("(Υποθέτοντας 5 χρόνια και 5% επιτόκιο)")
+        st.caption(f"(Υποθέτοντας {metrics['term_years']} χρόνια και {metrics['interest_rate']*100:.1f}% επιτόκιο)")
     
     with col2:
         st.markdown("#### 📊 Ποσοστό Εισοδήματος")

@@ -5,7 +5,7 @@ Provides financial calculations for loans, affordability, and budgeting.
 Pure calculation logic without any UI dependencies.
 """
 
-from typing import Dict
+from typing import Dict, Optional
 
 
 class FinancialCalculatorService:
@@ -113,7 +113,12 @@ class FinancialCalculatorService:
         
         return (payment / income) * 100
     
-    def calculate_financial_metrics(self, financial_data: Dict[str, float]) -> Dict[str, float]:
+    def calculate_financial_metrics(
+        self, 
+        financial_data: Dict[str, float],
+        loan_type: str = "personal",
+        term_years: Optional[int] = None
+    ) -> Dict[str, float]:
         """
         Calculate all financial metrics from user's financial data.
         
@@ -125,6 +130,8 @@ class FinancialCalculatorService:
                 - existing_loans: Current loan payments
                 - loan_amount: Desired loan amount
                 - savings: Current savings
+            loan_type: Type of loan (mortgage, personal, auto, etc.)
+            term_years: Loan term in years (if None, uses default for loan type)
                 
         Returns:
             Dictionary with calculated metrics:
@@ -133,7 +140,12 @@ class FinancialCalculatorService:
                 - disposable_income: Income minus expenses
                 - estimated_payment: Estimated monthly loan payment
                 - payment_ratio: Payment as % of income
+                - term_years: Loan term used for calculation
+                - interest_rate: Interest rate used for calculation
         """
+        # Import here to avoid circular dependency
+        from finlit_agent.services.loan_information_service import LoanInformationService
+        
         # Extract inputs
         monthly_income = financial_data.get("monthly_income", 0)
         other_income = financial_data.get("other_income", 0)
@@ -141,16 +153,22 @@ class FinancialCalculatorService:
         existing_loans = financial_data.get("existing_loans", 0)
         loan_amount = financial_data.get("loan_amount", 0)
         
+        # Get defaults from LoanInformationService
+        loan_info_service = LoanInformationService()
+        if term_years is None:
+            term_years = loan_info_service.get_default_term(loan_type)
+        interest_rate = loan_info_service.get_default_interest_rate(loan_type)
+        
         # Calculate metrics
         total_income = self.calculate_total_income(monthly_income, other_income)
         total_expenses = self.calculate_total_expenses(monthly_expenses, existing_loans)
         disposable_income = self.calculate_disposable_income(total_income, total_expenses)
         
-        # Estimate payment (assuming 5 years and 5% interest as default)
+        # Estimate payment using loan-type specific defaults
         estimated_payment = self.calculate_monthly_payment(
             principal=loan_amount,
-            annual_rate=0.05,
-            years=5
+            annual_rate=interest_rate,
+            years=term_years
         )
         
         payment_ratio = self.calculate_payment_ratio(estimated_payment, monthly_income)
@@ -160,6 +178,8 @@ class FinancialCalculatorService:
             "total_expenses": total_expenses,
             "disposable_income": disposable_income,
             "estimated_payment": estimated_payment,
-            "payment_ratio": payment_ratio
+            "payment_ratio": payment_ratio,
+            "term_years": term_years,
+            "interest_rate": interest_rate
         }
 
