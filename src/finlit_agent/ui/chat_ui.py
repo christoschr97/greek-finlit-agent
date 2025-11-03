@@ -4,7 +4,7 @@ Chat UI components for the Streamlit app.
 
 from typing import List
 import streamlit as st
-from langchain_core.messages import HumanMessage, AIMessage, BaseMessage
+from langchain_core.messages import HumanMessage, AIMessage, BaseMessage, ToolMessage
 from .config import (
     CHAT_INPUT_PLACEHOLDER,
     THINKING_SPINNER,
@@ -60,9 +60,25 @@ def _generate_agent_response(messages: List[BaseMessage]) -> None:
     with st.chat_message("assistant"):
         with st.spinner(THINKING_SPINNER):
             try:
-                response = agent.invoke(messages)
-                st.write(response.content)
-                messages.append(AIMessage(content=response.content))
+                result = agent.invoke({"messages": messages})
+                ai_message = result["messages"][-1]  # Get the latest AI message
+                st.write(ai_message.content)
+                
+                # Check which tools were used
+                used_tools = set()
+                for msg in result["messages"]:
+                    if isinstance(msg, ToolMessage):
+                        tool_name = msg.name
+                        if tool_name == "analyze_affordability":
+                            used_tools.add("Affordability Analysis")
+                        elif tool_name == "generate_loan_plans":
+                            used_tools.add("Loan Plan Generation")
+                
+                if used_tools:
+                    tools_text = ", ".join(sorted(used_tools))
+                    st.caption(f"🔧 Used: {tools_text}")
+                
+                messages.append(ai_message)
             except Exception as e:
                 error_message = f"{ERROR_PREFIX}: {str(e)}"
                 st.error(error_message)

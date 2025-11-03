@@ -63,10 +63,10 @@ elif not st.session_state[config.SESSION_PATH_SELECTED]:
 elif st.session_state[config.SESSION_SELECTED_PATH] == "general_chat":
     # Ensure chat is initialized with assessment context before rendering chat
     if st.session_state[config.SESSION_AGENT] is None:
-        agent = create_financial_agent()
         system_prompt = BASE_SYSTEM_PROMPT + st.session_state[config.SESSION_ASSESSMENT].get_context_summary()
+        agent = create_financial_agent(system_prompt)
         st.session_state[config.SESSION_AGENT] = agent
-        st.session_state[config.SESSION_MESSAGES] = [SystemMessage(content=system_prompt)]
+        st.session_state[config.SESSION_MESSAGES] = []
     render_chat()
 elif st.session_state[config.SESSION_SELECTED_PATH] == "responsible_borrowing":
     render_responsible_borrowing()

@@ -102,12 +102,14 @@ def test_render_responsible_borrowing_back_button_click(mock_st):
     mock_st.columns = MagicMock(side_effect=[
         [MagicMock(), MagicMock()],  # First call (2 columns for terms)
         [MagicMock(), MagicMock(), MagicMock()],  # Second call (3 columns for metrics)
-        [MagicMock(), MagicMock()]  # Third call (2 columns for analysis)
+        [MagicMock(), MagicMock()],  # Third call (2 columns for analysis)
+        [MagicMock(), MagicMock()]  # Fourth call (2 columns for edit button)
     ])
     mock_st.metric = MagicMock()
     mock_st.error = MagicMock()
-    # Multiple buttons: reset button in explanation, edit button in summary, back button at bottom
-    mock_st.button = MagicMock(side_effect=[False, False, True])  # Reset + Edit + Back
+    mock_st.get = MagicMock(return_value=False)  # Mock session_state.get() for visualizations
+    # Multiple buttons: reset button in explanation, visualization button, edit button, back button
+    mock_st.button = MagicMock(side_effect=[False, False, False, True])  # Reset + Viz + Edit + Back
     mock_st.rerun = MagicMock()
     
     render_responsible_borrowing()
